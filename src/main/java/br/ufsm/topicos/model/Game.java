@@ -10,10 +10,18 @@ import br.ufsm.topicos.exceptions.ExceptionTruco;
 import br.ufsm.topicos.hibernate.HibernateConfig;
 import br.ufsm.topicos.log.Log;
 import org.hibernate.Session;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -203,6 +211,22 @@ public class Game {
         this.dealtCards2 = dealtCards2;
     }
 
+    public LinkedList<Card> getPlayedCardsPlayer1() {
+        return playedCardsPlayer1;
+    }
+
+    public void setPlayedCardsPlayer1(LinkedList<Card> playedCardsPlayer1) {
+        this.playedCardsPlayer1 = playedCardsPlayer1;
+    }
+
+    public LinkedList<Card> getPlayedCardsPlayer2() {
+        return playedCardsPlayer2;
+    }
+
+    public void setPlayedCardsPlayer2(LinkedList<Card> playedCardsPlayer2) {
+        this.playedCardsPlayer2 = playedCardsPlayer2;
+    }
+
     public void init() {
         deck.suffle();
         envido = new Envido();
@@ -224,12 +248,19 @@ public class Game {
     public void setCardsToCase() {
         Deck deckRobo;
         Deck deckHumano;
+        int ptsEnvidoHumano;
+        int ptsEnvidoRobo;
+
         if (playerRobo == getPlayer1()) {
             deckRobo = sortCards(getPlayer1());
             deckHumano = sortCards(getPlayer2());
+            ptsEnvidoRobo = getEnvidoPoints(getPlayer1().getCards());
+            ptsEnvidoHumano = getEnvidoPoints(getPlayer2().getCards());
         } else {
             deckRobo = sortCards(getPlayer2());
             deckHumano = sortCards(getPlayer1());
+            ptsEnvidoRobo = getEnvidoPoints(getPlayer2().getCards());
+            ptsEnvidoHumano = getEnvidoPoints(getPlayer1().getCards());
         }
         trucoDescription.setCartaAltaRobo(deckRobo.getCard(2).getCbrCode());
         trucoDescription.setNaipeCartaAltaRobo(deckRobo.getCard(2).getSuit().toString());
@@ -244,6 +275,9 @@ public class Game {
         trucoDescription.setNaipeCartaMediaHumano(deckHumano.getCard(1).getSuit().toString());
         trucoDescription.setCartaBaixaHumano(deckHumano.getCard(0).getCbrCode());
         trucoDescription.setNaipeCartaBaixaHumano(deckHumano.getCard(2).getSuit().toString());
+
+        trucoDescription.setPontosEnvidoHumano(ptsEnvidoHumano);
+        trucoDescription.setPontosEnvidoRobo(ptsEnvidoRobo);
     }
 
     public Deck sortCards(Player player) {
@@ -389,7 +423,7 @@ public class Game {
         playerHand = playerHand == getPlayer1() ? getPlayer2() : getPlayer1();
         playerTurn  = playerHand;
         playerToken = playerHand;
-        trucoDescription.setJogadorMao(playerRobo == playerHand ? TrucoData.ROBO : TrucoData.HUMANO);
+        trucoDescription.setJogadorMao((playerRobo.equals(playerHand)) ? TrucoData.ROBO : TrucoData.HUMANO);
     }
 
     public void shiftToken() {
@@ -537,6 +571,28 @@ public class Game {
         trucoDescription.setQuemGanhouEnvido(playerRobo == origem ? TrucoData.HUMANO : TrucoData.ROBO);
     }
 
+    public void updatePlacarEnvidoAccept(Player playerEscodeuPontos) {
+        int ptsEnvidoPlayer1 = getEnvidoPoints(getPlayer1().getCards());
+        int ptsEnvidoPlayer2 = getEnvidoPoints(getPlayer2().getCards());
+        int ptsGanhos = playerEscodeuPontos.equals(getPlayer1()) ? envido.getPontosGanhosAceitos(player1Points) :
+                envido.getPontosGanhosAceitos(player2Points);
+        int winner = playerEscodeuPontos.equals(playerRobo) ? TrucoData.HUMANO : TrucoData.ROBO;
+
+        if (playerEscodeuPontos.equals(getPlayer1())) {
+            player2Points += ptsGanhos;
+        } else {
+            player1Points += ptsGanhos;
+        }
+
+        resultEnvidoLog(winner, ptsGanhos,
+                playerEscodeuPontos.equals(playerRobo) ? -1 : getEnvidoPoints(playerHand.getCards()),
+                playerEscodeuPontos.equals(playerRobo) ? getEnvidoPoints(playerHand.getCards()) : -1);
+        trucoDescription.setTentosEnvido(ptsGanhos);
+        trucoDescription.setQuemGanhouEnvido(winner);
+        trucoDescription.setQuemEscondeuPontosEnvido(playerEscodeuPontos.equals(playerRobo) ? TrucoData.ROBO : TrucoData.HUMANO);
+        //trucoDescription.setPontosEnvidoRobo(playerEscodeuPontos.equals(playerRobo) ? -1 : getEnvidoPoints(playerHand.getCards()));
+        //trucoDescription.setPontosEnvidoHumano(playerEscodeuPontos.equals(playerRobo) ? getEnvidoPoints(playerHand.getCards()) : -1);
+    }
 
     public void updatePlacarEnvidoAccept() {
         int ptsEnvidoPlayer1 = getEnvidoPoints(getPlayer1().getCards());
@@ -567,8 +623,8 @@ public class Game {
                 playerRobo == getPlayer1() ? ptsEnvidoPlayer2 : ptsEnvidoPlayer1);
         trucoDescription.setTentosEnvido(ptsGanhos);
         trucoDescription.setQuemGanhouEnvido(winner);
-        trucoDescription.setPontosEnvidoRobo(playerRobo == getPlayer1() ? ptsEnvidoPlayer1 : ptsEnvidoPlayer2);
-        trucoDescription.setPontosEnvidoHumano(playerRobo == getPlayer1() ? ptsEnvidoPlayer2 : ptsEnvidoPlayer1);
+        //trucoDescription.setPontosEnvidoRobo(playerRobo == getPlayer1() ? ptsEnvidoPlayer1 : ptsEnvidoPlayer2);
+        //trucoDescription.setPontosEnvidoHumano(playerRobo == getPlayer1() ? ptsEnvidoPlayer2 : ptsEnvidoPlayer1);
 
     }
 
@@ -639,6 +695,8 @@ public class Game {
                         //playedCardsHumano.addCard(card);
                     }
                 }
+                verifyDeceptionTrucoAtPlayCardRound1(player, card);
+                verifyDeceptionEnvidoAtPlayCard(player);
                 shiftTurn();
                 break;
             case 2:
@@ -661,6 +719,7 @@ public class Game {
                     }
 
                 }
+                verifyDeceptionTrucoAtPlayCardRound1(player, card);
                 compareCards(round1);
                 rounds.add(round1);
                 resultRoundLog(round1.getResult(), 1);
@@ -682,6 +741,7 @@ public class Game {
             case 3:
                 round2 = new Round(2);
                 if (faceDown) {
+                    verifyDeceptionTrucoCartaViradaRound2(player);
                     if (getPlayer1() == player) {
                         round2.setFaceDownCardPlayer1(true);
                     } else {
@@ -711,6 +771,7 @@ public class Game {
                 break;
             case 4:
                 if (faceDown) {
+                    verifyDeceptionTrucoCartaViradaRound2(player);
                     if (getPlayer1() == player) {
                         round2.setFaceDownCardPlayer1(true);
                     } else {
@@ -904,8 +965,8 @@ public class Game {
         trucoDescription.setTentosPosterioresRobo(playerRobo == getPlayer1() ? getPlayer1Points() : getPlayer2Points());
         trucoDescription.setTentosPosterioresHumano(playerRobo == getPlayer1() ? getPlayer2Points() : getPlayer1Points());
         saveCase();
-        shiftHand();
         init();
+        shiftHand();
         trucoValue = 1;
         darAsCartas(playerHand);
         //darAsCartasBothFlor();
@@ -955,7 +1016,291 @@ public class Game {
 
     }
 
-    public void deceptiveBehaviorTruco(Player origem, Player destino, int trucoLevel) {
+    ///DECEPTION
+
+    public void verifyDeceptionEnvidoAtCallPoints(Player player) {
+        if (playerHand.equals(player)) {
+            //TODO: Definir o que é poucos pontos como mão
+            // #1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;
+            if (getEnvidoPoints(player.getCards()) < 24) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_SEM_PONTO);
+                } else {
+                    trucoDescription.setHumanoMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_SEM_PONTO);
+                }
+            }
+        } else {
+            // #3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;
+            if (getEnvidoPoints(player.getCards()) < 24) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_PE_SEM_PONTO);
+                } else {
+                    trucoDescription.setHumanoMentiuEnvido(TrucoData.DECEPTION_ENVIDO_PE_SEM_PONTO);
+                }
+            }
+
+        }
+
+    }
+
+    public void verifyDeceptionEnvidoAtPlayCard(Player player) {
+        if (playerHand.equals(player) && envido.getEnvidoChain().size() == 0) {
+            //TODO: Definir o que é muitos pontos como mão
+            if (getEnvidoPoints(player.getCards()) > 29) {
+                //#2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos;
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_MUITO_PONTO);
+                } else {
+                    trucoDescription.setHumanoMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_MUITO_PONTO);
+                }
+            }
+        }
+    }
+
+    public void verifyDeceptionEnvidoAtHidePoints(Player player) {
+        //TODO: Definir o que é muitos pontos como mão
+        //#4 - Jogador pé, não canta os pontos para não entregar suas cartas;
+        trucoDescription.setHasDeception(TrucoData.TRUE);
+        if (player.equals(playerRobo)) {
+            trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_PE_E_BOM);
+        } else {
+            trucoDescription.setHumanoMentiuEnvido(TrucoData.DECEPTION_ENVIDO_PE_E_BOM);
+        }
+
+    }
+
+    public void verifyDeceptionTrucoBeforePlayCardRound1(Player player, int countPlayedCards) {
+        Deck tmpDeck = sortCards(player);
+        if (countPlayedCards == 0) {
+            //#15 - Jogador com mão ruim chama TRUCO antes de mostrar as cartas;
+            if (tmpDeck.getCard(2).getCbrCode() < 40 && tmpDeck.getCard(1).getCbrCode() < 12) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_CANTA_TRUCO);
+                } else {
+                    trucoDescription.setHumanoMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_CANTA_TRUCO);
+                }
+            }
+        }
+    }
+
+    public void verifyDeceptionTrucoAtPlayCardRound1(Player player, Card playedCard ){
+        Deck tmpDeck = sortCards(player);
+
+        // #5 - Jogador mão, deixa de cantar ENVIDO/REAL/FALTA sem ter muitos pontos, porém joga um 6 ou 7 para o oponente não cantar ;
+        if (playerHand.equals(player)) {
+            if (getEnvidoPoints(player.getCards()) < 24) {
+                if (envido.getEnvidoChain().size() == 0) {
+                    if (playedCard.getFace().equals(Face.SETE) || playedCard.getFace().equals(Face.SEIS)) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        if (player.equals(playerRobo)) {
+                            trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_JOGA_SETE);
+                        } else {
+                            trucoDescription.setRoboMentiuEnvido(TrucoData.DECEPTION_ENVIDO_MAO_JOGA_SETE);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (tmpDeck.getCard(2).getCbrCode() > 24 && tmpDeck.getCard(1).getCbrCode() > 12) {
+
+            //#11 - Jogador com mão boa larga a carta mais baixa;
+            if (tmpDeck.getCard(0).equals(playedCard)) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_BOA_CARTA_BAIXA);
+                } else {
+                    trucoDescription.setHumanoMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_BOA_CARTA_BAIXA);
+                }
+            }
+
+            //#13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos;
+            if (player.equals(playerRobo)) {
+                if (trucoDescription.getPontosEnvidoRobo() != null) {
+                    if (!getSuitEnvido(player.getCards()).equals(playedCard.getSuit())) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        trucoDescription.setRoboMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_BOA_CARTA_NAIPE_DIFERENTE);
+                    }
+                }
+            } else {
+                if (trucoDescription.getPontosEnvidoHumano() != null) {
+                    if (!getSuitEnvido(player.getCards()).equals(playedCard.getSuit())) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        trucoDescription.setHumanoMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_BOA_CARTA_NAIPE_DIFERENTE);
+                    }
+                }
+            }
+        }
+
+
+        if (tmpDeck.getCard(2).getCbrCode() < 40 && tmpDeck.getCard(1).getCbrCode() < 12) {
+
+            //#12 - Jogador com mão ruim larga a carta mais alta;
+            if (tmpDeck.getCard(2).equals(playedCard)) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_RUIM_CARTA_ALTA);
+                } else {
+                    trucoDescription.setHumanoMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_RUIM_CARTA_ALTA);
+                }
+            }
+
+            //#14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos;
+            if (player.equals(playerRobo)) {
+
+                if (trucoDescription.getPontosEnvidoRobo() != null) {
+                    if (!getSuitEnvido(player.getCards()).equals(playedCard.getSuit())) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        trucoDescription.setRoboMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_RUIM_CARTA_NAIPE_DIFERENTE);
+                    }
+                }
+            } else {
+                if (trucoDescription.getPontosEnvidoHumano() != null) {
+                    if (!getSuitEnvido(player.getCards()).equals(playedCard.getSuit())) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        trucoDescription.setHumanoMentiuRound1(TrucoData.DECEPTION_TRUCO_ROUND_1_MAO_RUIM_CARTA_NAIPE_DIFERENTE);
+                    }
+                }
+            }
+        }
+    }
+
+    public void verifyDeceptionTrucoCartaViradaRound2(Player player) {
+        Deck tmpDeck = sortCards(player);
+        if (dealtCards2.size() >= 2 && round1.getWinner().equals(player)) {
+
+            //#21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;
+            if (tmpDeck.getCard(2).getCbrCode() > 24 && tmpDeck.getCard(1).getCbrCode() > 12) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_BOA_FEZ_PRIMEIRA_CARTA_VIRADA);
+                } else {
+                    trucoDescription.setHumanoMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_BOA_FEZ_PRIMEIRA_CARTA_VIRADA);
+                }
+            }
+
+            //#22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;
+            if (tmpDeck.getCard(2).getCbrCode() < 40 && tmpDeck.getCard(1).getCbrCode() < 12) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_RUIM_FEZ_PRIMEIRA_CARTA_VIRADA);
+                } else {
+                    trucoDescription.setHumanoMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_RUIM_FEZ_PRIMEIRA_CARTA_VIRADA);
+                }
+            }
+
+        }
+    }
+
+    public void verifyDeceptionTrucoBeforePlayCardRound2(Player player, LinkedList playedCards) {
+        Deck tmpDeck = sortCards(player);
+        if (dealtCards2.size() >= 2 && playedCards.size() == 1) {
+            //#23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta;
+            if (tmpDeck.getCard(2).getCbrCode() < 40 && tmpDeck.getCard(1).getCbrCode() < 12) {
+                trucoDescription.setHasDeception(TrucoData.TRUE);
+                if (player.equals(playerRobo)) {
+                    trucoDescription.setRoboMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_RUIM_CANTA_TRUCO);
+                } else {
+                    trucoDescription.setHumanoMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_MAO_RUIM_CANTA_TRUCO);
+                }
+            }
+
+            //#24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;
+           if (round1.getResult()!= Result.EMPATE ) {
+               if (!round1.getWinner().equals(player)) {
+                   Card cartaJogadaOponente = null;
+
+                   if (player.equals(player1)) {
+                       if (playedCardsPlayer2.size() == 2) {
+                           cartaJogadaOponente = round2.getPlayer2Card();
+                       }
+                   } else {
+                       if (playedCardsPlayer1.size() == 2) {
+                           cartaJogadaOponente = round2.getPlayer1Card();
+                       }
+                   }
+
+                   if (cartaJogadaOponente != null) {
+                       boolean hasCardToWin = false;
+                       for (Card card: player.getCards().getCards()) {
+                           if (!playedCards.contains(card) && card.getCbrCode() > cartaJogadaOponente.getCbrCode()) {
+                               hasCardToWin = true;
+                           }
+                       }
+                       if (!hasCardToWin) {
+                           trucoDescription.setHasDeception(TrucoData.TRUE);
+                           if (player.equals(playerRobo)) {
+                               trucoDescription.setRoboMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_PERDEU_NAO_MATA_SEGUNDA_CANTA_TRUCO);
+                           } else {
+                               trucoDescription.setHumanoMentiuRound2(TrucoData.DECEPTION_TRUCO_ROUND_2_PERDEU_NAO_MATA_SEGUNDA_CANTA_TRUCO);
+                           }
+                       }
+                   }
+
+               }
+           }
+
+        }
+    }
+
+    public void verifyDeceptionTrucoBeforePlayCardRound3(Player player, LinkedList playedCards) {
+
+        if (dealtCards2.size() >= 4 && playedCards.size() == 2) {
+
+            if (round2.getWinner().equals(player)) {
+                //#31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta;
+                player.getCards().getCards().forEach(card -> {
+                    if (!playedCards.contains(card)) {
+                        if (card.getCbrCode() < 10) {
+                            trucoDescription.setHasDeception(TrucoData.TRUE);
+                            if (player.equals(playerRobo)) {
+                                trucoDescription.setRoboMentiuRound3(TrucoData.DECEPTION_TRUCO_ROUND_3_CARTA_RUIM_CANTA_TRUCO);
+                            } else {
+                                trucoDescription.setHumanoMentiuRound3(TrucoData.DECEPTION_TRUCO_ROUND_3_CARTA_RUIM_CANTA_TRUCO);
+                            }
+                        }
+                    }
+                });
+            } else {
+                //#32 - Jogador é o pé e não tem carta para fazer a terceira, chama TRUCO antes de largar a terceira carta;
+                Card cartaJogadaOponente = null;
+
+                if (player.equals(player1)) {
+                    if (playedCardsPlayer2.size() == 3) {
+                        cartaJogadaOponente = round3.getPlayer2Card();
+                    }
+                } else {
+                    if (playedCardsPlayer1.size() == 3) {
+                        cartaJogadaOponente = round3.getPlayer1Card();
+                    }
+                }
+
+                if (cartaJogadaOponente != null) {
+                    boolean hasCardToWin = false;
+                    for (Card card: player.getCards().getCards()) {
+                        if (!playedCards.contains(card) && card.getCbrCode() > cartaJogadaOponente.getCbrCode()) {
+                            hasCardToWin = true;
+                        }
+                    }
+                    if (!hasCardToWin) {
+                        trucoDescription.setHasDeception(TrucoData.TRUE);
+                        if (player.equals(playerRobo)) {
+                            trucoDescription.setRoboMentiuRound3(TrucoData.DECEPTION_TRUCO_ROUND_3_CARTA_NAO_MATA_TERCEIRA_CANTA_TRUCO);
+                        } else {
+                            trucoDescription.setHumanoMentiuRound3(TrucoData.DECEPTION_TRUCO_ROUND_3_CARTA_NAO_MATA_TERCEIRA_CANTA_TRUCO);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    /*public void deceptiveBehaviorTruco(Player origem, Player destino, int trucoLevel) {
         Deck sortedDeck = sortCards(origem);
         int handSum = getHandSum(origem);
         boolean cartaMaior = false;
@@ -1070,7 +1415,7 @@ public class Game {
         //TODO: tem mão boa e deixa o adversario fazer a primeira.
         //TODO: era mão com bastante pontos e não pediu envido para poder aumentar
         //TODO: tem mão ruim mas tenta fazer a primeira.
-    }
+    }*/
 
     public int getHandSum(Player player) {
         int sum = 0;
@@ -1460,6 +1805,10 @@ public class Game {
     }
 
 
+    public int getHandRanking(Deck deck) {
+        return deck.getCard(0).getCbrCode() + deck.getCard(1).getCbrCode() + deck.getCard(2).getCbrCode();
+    }
+
     public String getRodada(int round) {
         String rodada = "";
 
@@ -1488,6 +1837,164 @@ public class Game {
         }
 
         return rodada;
+    }
+
+    public Suit getSuitEnvido(Deck deck) {
+        HashMap<Suit, ArrayList<Card>> cardsBySuit = new HashMap<>();
+
+        deck.getCards().forEach(card -> {
+            if (!cardsBySuit.containsKey(card.getSuit())) {
+                cardsBySuit.put(card.getSuit(), new ArrayList<>());
+            }
+            cardsBySuit.get(card.getSuit()).add(card);
+        });
+
+        int modeLength = 0;
+        Suit modeSuit = Suit.ESPADAS;
+
+        for (Suit suit : cardsBySuit.keySet()) {
+            if (cardsBySuit.get(suit).size() > modeLength) {
+                modeLength = cardsBySuit.get(suit).size();
+                modeSuit = suit;
+            }
+        }
+
+        return modeSuit;
+    }
+
+    private void loadTestHandJson() {
+        try {
+
+            JSONParser parser = new JSONParser();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("maosExperimentos.json");
+
+            JSONArray jsonArray = (JSONArray) parser.parse(new InputStreamReader(inputStream));
+
+            Deck deckMaos = new Deck();
+            for (Object object : jsonArray) {
+
+                JSONObject mao = (JSONObject) object;
+
+                Face faceCard1 = getFaceByCbrCode((int) (long) mao.get("carta1"));
+                Suit suitCard1 = getSuitByString((String) mao.get("naipeCarta1"));
+                int cbrCodeCard1 = (int) (long) mao.get("carta1");
+
+                Face faceCard2 = getFaceByCbrCode((int) (long) mao.get("carta2"));
+                Suit suitCard2 = getSuitByString((String) mao.get("naipeCarta2"));
+                int cbrCodeCard2 = (int) (long) mao.get("carta2");
+
+                Face faceCard3 = getFaceByCbrCode((int) (long) mao.get("carta3"));
+                Suit suitCard3 = getSuitByString((String) mao.get("naipeCarta3"));
+                int cbrCodeCard3 = (int) (long) mao.get("carta3");
+
+                Face faceCard4 = getFaceByCbrCode((int) (long) mao.get("carta4"));
+                Suit suitCard4 = getSuitByString((String) mao.get("naipeCarta4"));
+                int cbrCodeCard4 = (int) (long) mao.get("carta4");
+
+                Face faceCard5 = getFaceByCbrCode((int) (long) mao.get("carta5"));
+                Suit suitCard5 = getSuitByString((String) mao.get("naipeCarta5"));
+                int cbrCodeCard5 = (int) (long) mao.get("carta5");
+
+                Face faceCard6 = getFaceByCbrCode((int) (long) mao.get("carta6"));
+                Suit suitCard6 = getSuitByString((String) mao.get("naipeCarta6"));
+                int cbrCodeCard6 = (int) (long) mao.get("carta6");
+
+                Card card1 = new Card(faceCard1, suitCard1, cbrCodeCard1);
+                Card card2 = new Card(faceCard2, suitCard2, cbrCodeCard2);
+                Card card3 = new Card(faceCard3, suitCard3, cbrCodeCard3);
+                Card card4 = new Card(faceCard4, suitCard4, cbrCodeCard4);
+                Card card5 = new Card(faceCard5, suitCard5, cbrCodeCard5);
+                Card card6 = new Card(faceCard6, suitCard6, cbrCodeCard6);
+
+                deckMaos.addCard(card1);
+                deckMaos.addCard(card2);
+                deckMaos.addCard(card3);
+                deckMaos.addCard(card4);
+                deckMaos.addCard(card5);
+                deckMaos.addCard(card6);
+            }
+
+            System.out.println(deckMaos.getCards().toString());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Suit getSuitByString(String suitString) {
+        Suit suit = null;
+
+        switch (suitString) {
+            case "ESPADAS":
+                suit = Suit.ESPADAS;
+                break;
+            case "BASTOS":
+                suit = Suit.BASTOS;
+                break;
+            case "OURO":
+                suit = Suit.OURO;
+                break;
+            case "COPAS":
+                suit = Suit.COPAS;
+                break;
+        }
+
+        return suit;
+    }
+
+    private Face getFaceByCbrCode(int cbrCode) {
+        Face face = null;
+        switch (cbrCode) {
+            case 52:
+                face = Face.AS;
+                break;
+            case 50:
+                face = Face.AS;
+                break;
+            case 42:
+                face = Face.SETE;
+                break;
+            case 40:
+                face = Face.SETE;
+                break;
+            case 24:
+                face = Face.TRES;
+                break;
+            case 16:
+                face = Face.DOIS;
+                break;
+            case 12:
+                face = Face.AS;
+                break;
+            case 8:
+                face = Face.REI;
+                break;
+            case 7:
+                face = Face.VALETE;
+                break;
+            case 6:
+                face = Face.DEZ;
+                break;
+            case 4:
+                face = Face.SETE;
+                break;
+            case 3:
+                face = Face.SEIS;
+                break;
+            case 2:
+                face = Face.CINCO;
+                break;
+            case 1:
+                face = Face.QUATRO;
+                break;
+        }
+
+        return face;
+
     }
 
 

@@ -64,6 +64,7 @@ public class HibernateConfig {
 
         cfg.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         cfg.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/dbtrucocbr");
+        //cfg.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/dbdeception");
         cfg.setProperty("hibernate.connection.username", "root");
         cfg.setProperty("hibernate.connection.password", "desenvolvimento");
         cfg.setProperty("dialect", "org.hibernate.dialect.MySQLDialect");

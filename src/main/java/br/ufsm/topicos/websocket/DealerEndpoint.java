@@ -23,13 +23,17 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.lang.String.format;
 
 /**
  * Universidade Federal de Santa Maria
@@ -82,7 +86,7 @@ public class DealerEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException {
         JsonReader reader = Json.createReader(new StringReader(message));
         LOGGER.log(Level.INFO, "MSG RECEBIDA: {0} - Session: {1}", new Object[]{message, session});
         JsonObject messageJson = reader.readObject();
@@ -144,17 +148,32 @@ public class DealerEndpoint {
                             break;
                         case "QUERO":
                             int tipo = Integer.parseInt(messageJson.getString("tipo"));
-                            candidate.resetToken();
-                            shiftTokenMessage(player1, candidate);
-                            shiftTokenMessage(player2, candidate);
+                            //candidate.resetToken();
+                            //shiftTokenMessage(player1, candidate);
+                            //shiftTokenMessage(player2, candidate);
                             switch(tipo) {
                                 case 1:
+
+                                    infoEnvidoMessage(player1, player1, " aceitou.");
+                                    infoEnvidoMessage(player2, player1, " aceitou.");
+                                    candidate.setPlayerToken(player1.equals(candidate.getPlayerHand()) ? player2 : player1);
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedPointsLog(candidate.getPlayer1(), candidate.getEnvido().getEnvidoChain().getLast(), true);
-                                    candidate.updatePlacarEnvidoAccept();
-                                    resultEnvidoMessage(player1, player2, candidate);
-                                    resultEnvidoMessage(player2, player1, candidate);
+
+                                    pontosEnvidoMessage(candidate.getPlayerHand(), player1.equals(candidate.getPlayerHand())
+                                            ? player2 : player1, candidate);
+
+                                    //candidate.updatePlacarEnvidoAccept();
+                                    //resultEnvidoMessage(player1, player2, candidate);
+                                    //resultEnvidoMessage(player2, player1, candidate);
                                     break;
                                 case 2:
+                                    candidate.resetToken();
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedGameLog(candidate.getPlayer1(), candidate.getTruco().getTrucoChain().getLast(), true);
                                     candidate.updateValorTruco(true);
                                     avisoInfoTruco("RESPONSE_TRUCO", player1,
@@ -165,6 +184,10 @@ public class DealerEndpoint {
                                             candidate.getTruco().getTrucoChain().getLast().ordinal()+1, false, 0, player2==candidate.getPlayerHand(), false);
                                     break;
                                 case 3:
+                                    candidate.resetToken();
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedPointsLog(candidate.getPlayer1(), candidate.getFlor().getFlorChain().getLast(), true);
                                     candidate.updatePlacarFlorAccept();
                                     resultFlorMessage(player1, player2, candidate);
@@ -225,6 +248,24 @@ public class DealerEndpoint {
                             candidate.getTrucoDescription().setQuandoBaralho(round);
                             finishGameHand(candidate);
                             break;
+                        case "SHOW_POINTS":
+                            boolean isShowPoints = messageJson.getBoolean("isShowPoints");
+                            candidate.resetToken();
+                            shiftTokenMessage(player1, candidate);
+                            shiftTokenMessage(player2, candidate);
+                            if (isShowPoints) {
+                                candidate.updatePlacarEnvidoAccept();
+                                resultEnvidoMessage(player1, player2, candidate);
+                                resultEnvidoMessage(player2, player1, candidate);
+                            } else {
+                                candidate.updatePlacarEnvidoAccept(player1);
+                                resultEnvidoMessage(player1, player2, player1, candidate);
+                                resultEnvidoMessage(player2, player2, player1, candidate);
+                                candidate.verifyDeceptionEnvidoAtHidePoints(player1);
+                            }
+                            updatePlacarMessage(player1, candidate.getPlayer1Points(), candidate.getPlayer2Points(), player2.getName());
+                            updatePlacarMessage(player2, candidate.getPlayer2Points(), candidate.getPlayer1Points(), player1.getName());
+                            break;
                     }
                 }
 
@@ -279,17 +320,31 @@ public class DealerEndpoint {
                             break;
                         case "QUERO":
                             int tipo = Integer.parseInt(messageJson.getString("tipo"));
-                            candidate.resetToken();
-                            shiftTokenMessage(player1, candidate);
-                            shiftTokenMessage(player2, candidate);
+                            //candidate.resetToken();
+                            //shiftTokenMessage(player1, candidate);
+                            //shiftTokenMessage(player2, candidate);
                             switch (tipo) {
                                 case 1:
+                                    infoEnvidoMessage(player1, player2, " + aceitou.");
+                                    infoEnvidoMessage(player2, player2, " + aceitou.");
+                                    candidate.setPlayerToken(player2.equals(candidate.getPlayerHand()) ? player1 : player2);
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedPointsLog(candidate.getPlayer2(), candidate.getEnvido().getEnvidoChain().getLast(), true);
-                                    candidate.updatePlacarEnvidoAccept();
-                                    resultEnvidoMessage(player2, player1, candidate);
-                                    resultEnvidoMessage(player1, player2, candidate);
+
+                                    pontosEnvidoMessage(candidate.getPlayerHand(), player2.equals(candidate.getPlayerHand())
+                                            ? player1 : player2, candidate);
+
+                                    //candidate.updatePlacarEnvidoAccept();
+                                    //resultEnvidoMessage(player2, player1, candidate);
+                                    //resultEnvidoMessage(player1, player2, candidate);
                                     break;
                                 case 2:
+                                    candidate.resetToken();
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedGameLog(candidate.getPlayer2(), candidate.getTruco().getTrucoChain().getLast(), true);
                                     candidate.updateValorTruco(true);
                                     avisoInfoTruco("RESPONSE_TRUCO", player1,
@@ -300,6 +355,10 @@ public class DealerEndpoint {
                                             candidate.getTruco().getTrucoChain().getLast().ordinal() + 1, true, 0, player2 == candidate.getPlayerHand(), false);
                                     break;
                                 case 3:
+                                    candidate.resetToken();
+                                    shiftTokenMessage(player1, candidate);
+                                    shiftTokenMessage(player2, candidate);
+
                                     candidate.acceptDeclinedPointsLog(candidate.getPlayer2(), candidate.getFlor().getFlorChain().getLast(), true);
                                     candidate.updatePlacarFlorAccept();
                                     resultFlorMessage(player1, player2, candidate);
@@ -360,6 +419,25 @@ public class DealerEndpoint {
                             candidate.getTrucoDescription().setQuandoBaralho(round);
                             finishGameHand(candidate);
                             break;
+                        case "SHOW_POINTS":
+                            boolean isShowPoints = messageJson.getBoolean("isShowPoints");
+                            candidate.resetToken();
+                            shiftTokenMessage(player1, candidate);
+                            shiftTokenMessage(player2, candidate);
+                            if (isShowPoints) {
+                                candidate.updatePlacarEnvidoAccept();
+                                resultEnvidoMessage(player2, player1, candidate);
+                                resultEnvidoMessage(player1, player2, candidate);
+
+                            } else {
+                                candidate.updatePlacarEnvidoAccept(player2);
+                                resultEnvidoMessage(player1, player1, player2, candidate);
+                                resultEnvidoMessage(player2, player1, player2, candidate);
+                                candidate.verifyDeceptionEnvidoAtHidePoints(player2);
+                            }
+                            updatePlacarMessage(player1, candidate.getPlayer1Points(), candidate.getPlayer2Points(), player2.getName());
+                            updatePlacarMessage(player2, candidate.getPlayer2Points(), candidate.getPlayer1Points(), player1.getName());
+                            break;
                     }
                 }
             }
@@ -374,8 +452,11 @@ public class DealerEndpoint {
     }
 
     @OnError
-    public void onError(Session session, Throwable throwable) {
-        // Do error handling here
+    public void onError(Session session, Throwable throwable){
+        LOGGER.severe(throwable.getMessage() + "-- " + throwable.getCause() + "-- " + throwable.getLocalizedMessage());
+        StringWriter errors = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(errors));
+        LOGGER.severe(errors.toString());
     }
 
     private void initGame(Game game) {
@@ -522,6 +603,7 @@ public class DealerEndpoint {
         if (game.getTruco().getTrucoChain().size() == 1) {
             game.getTruco().resetTrucoChain();
         }
+        game.verifyDeceptionEnvidoAtCallPoints(origem);
         switch(tipoEnvido) {
             case 1:
                 envidoLevel = EnvidoLevel.ENVIDO;
@@ -562,6 +644,16 @@ public class DealerEndpoint {
     }
 
     private void replyTruco(Player origem, Player destino, int tipoTruco, Game game) {
+
+        game.verifyDeceptionTrucoBeforePlayCardRound1(origem, origem.equals(game.getPlayer1()) ?
+                game.getPlayedCardsPlayer1().size() : game.getPlayedCardsPlayer2().size());
+
+        game.verifyDeceptionTrucoBeforePlayCardRound2(origem, origem.equals(game.getPlayer1()) ?
+                game.getPlayedCardsPlayer1() : game.getPlayedCardsPlayer2());
+
+        game.verifyDeceptionTrucoBeforePlayCardRound3(origem, origem.equals(game.getPlayer1()) ?
+                game.getPlayedCardsPlayer1() : game.getPlayedCardsPlayer2());
+
         TrucoLevel trucoLevel = null;
         //int round = game.getRounds().size() < 2 ? 1: game.getRounds().size();
         int round = Integer.parseInt(game.getRodada(game.getDealtCards2().size()));
@@ -701,6 +793,16 @@ public class DealerEndpoint {
         sendMessage(player, msg.toString());
     }
 
+    private void resultEnvidoMessage(Player destino, Player playerCantouEnvido, Player playerEscondeuPontos, Game game) {
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject msg = provider.createObjectBuilder()
+                .add("action", "RESULT_ENVIDO")
+                .add("result", playerCantouEnvido.getName() + ": " + game.getEnvidoPoints(playerCantouEnvido.getCards()) + " X " +
+                        playerEscondeuPontos.getName() + ": Não Mostrou os pontos!")
+                .build();
+        sendMessage(destino, msg.toString());
+    }
+
     private void resultEnvidoMessage(Player player, Player otherPlayer, Game game) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject msg = provider.createObjectBuilder()
@@ -716,6 +818,15 @@ public class DealerEndpoint {
         JsonObject msg = provider.createObjectBuilder()
                 .add("action", "RESULT_ENVIDO")
                 .add("result", origem.getName() + " não quis.")
+                .build();
+        sendMessage(player, msg.toString());
+    }
+
+    private void infoEnvidoMessage(Player player, Player origem, String mensagem) {
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject msg = provider.createObjectBuilder()
+                .add("action", "INFO_ENVIDO")
+                .add("content", origem.getName() + mensagem)
                 .build();
         sendMessage(player, msg.toString());
     }
@@ -882,6 +993,15 @@ public class DealerEndpoint {
         }
     }
 
+
+    private void pontosEnvidoMessage(Player player, Player destino, Game game) {
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject msg = provider.createObjectBuilder()
+                .add("action", "ENVIDO_POINTS")
+                .add("content", player.getName() + " cantou " + game.getEnvidoPoints(player.getCards()) + " pontos.")
+                .build();
+        sendMessage(destino, msg.toString());
+    }
 
 
 

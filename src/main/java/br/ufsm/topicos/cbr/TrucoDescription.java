@@ -251,6 +251,27 @@ public class TrucoDescription implements Serializable {
     @Column(name = "naipeTerceiraCartaHumano", nullable = true)
     private String naipeTerceiraCartaHumano;
 
+    @Column(name = "hasDeception", nullable = true)
+    private Integer hasDeception;
+
+    @Column(name = "roboMentiuRound1", nullable = true)
+    private Integer roboMentiuRound1;
+
+    @Column(name = "humanoMentiuRound1", nullable = true)
+    private Integer humanoMentiuRound1;
+
+    @Column(name = "roboMentiuRound2", nullable = true)
+    private Integer roboMentiuRound2;
+
+    @Column(name = "humanoMentiuRound2", nullable = true)
+    private Integer humanoMentiuRound2;
+
+    @Column(name = "roboMentiuRound3", nullable = true)
+    private Integer roboMentiuRound3;
+
+    @Column(name = "humanoMentiuRound3", nullable = true)
+    private Integer humanoMentiuRound3;
+
     @OneToMany(mappedBy="trucoDescription", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Collection<Log> logs = new LinkedList<Log>();
 
@@ -860,5 +881,61 @@ public class TrucoDescription implements Serializable {
 
     public void setNaipeTerceiraCartaHumano(String naipeTerceiraCartaHumano) {
         this.naipeTerceiraCartaHumano = naipeTerceiraCartaHumano;
+    }
+
+    public Integer getHasDeception() {
+        return hasDeception;
+    }
+
+    public void setHasDeception(Integer hasDeception) {
+        this.hasDeception = hasDeception;
+    }
+
+    public Integer getRoboMentiuRound1() {
+        return roboMentiuRound1;
+    }
+
+    public void setRoboMentiuRound1(Integer roboMentiuRound1) {
+        this.roboMentiuRound1 = roboMentiuRound1;
+    }
+
+    public Integer getHumanoMentiuRound1() {
+        return humanoMentiuRound1;
+    }
+
+    public void setHumanoMentiuRound1(Integer humanoMentiuRound1) {
+        this.humanoMentiuRound1 = humanoMentiuRound1;
+    }
+
+    public Integer getRoboMentiuRound2() {
+        return roboMentiuRound2;
+    }
+
+    public void setRoboMentiuRound2(Integer roboMentiuRound2) {
+        this.roboMentiuRound2 = roboMentiuRound2;
+    }
+
+    public Integer getHumanoMentiuRound2() {
+        return humanoMentiuRound2;
+    }
+
+    public void setHumanoMentiuRound2(Integer humanoMentiuRound2) {
+        this.humanoMentiuRound2 = humanoMentiuRound2;
+    }
+
+    public Integer getRoboMentiuRound3() {
+        return roboMentiuRound3;
+    }
+
+    public void setRoboMentiuRound3(Integer roboMentiuRound3) {
+        this.roboMentiuRound3 = roboMentiuRound3;
+    }
+
+    public Integer getHumanoMentiuRound3() {
+        return humanoMentiuRound3;
+    }
+
+    public void setHumanoMentiuRound3(Integer humanoMentiuRound3) {
+        this.humanoMentiuRound3 = humanoMentiuRound3;
     }
 }

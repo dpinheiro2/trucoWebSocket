@@ -294,6 +294,10 @@ function connect() {
             notifyWarning(jsonData.content);
         }
 
+        if (jsonData.action === "INFO_ENVIDO") {
+            notifyInfo(jsonData.content);
+        }
+
         if (jsonData.action === "RESULT_ENVIDO") {
             $("#status").text("Status: " + jsonData.result);
             notifyInfo(jsonData.result);
@@ -383,7 +387,41 @@ function connect() {
             }
         }
 
+        if (jsonData.action === "ENVIDO_POINTS") {
+            notifyInfo(jsonData.content);
+            swal({
+                    title: "Mostrar Pontos",
+                    text: jsonData.content,
+                    //type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1ab394",
+                    confirmButtonText: "Cantar Pontos",
+                    cancelButtonText: "É bom",
+                    closeOnConfirm: true,
+                    closeOnCancel: true },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var json = { action: "SHOW_POINTS", isShowPoints: true };
+                        send(json);
+                    } else {
+                        var json = { action: "SHOW_POINTS", isShowPoints: false };
+                        send(json);
+                    }
+
+                });
+        }
+
     };
+
+    ws.onclose = function (event) {
+        console.log("Ocorreu um erro: " + event );
+        notifyError('Ocorreu um erro: ' + event.code );
+    }
+
+    ws.onerror = function (event) {
+        console.log("Ocorreu um erro: " + event );
+        notifyError('Ocorreu um erro: ' + event.code );
+    }
 
     /** Event Handle Buttons */
 
@@ -1304,7 +1342,7 @@ function connect() {
         //neste caso o truco foi cantado pelo opponente na primeira rodada, eu sou o pé e tenho pontos ou flor
         //posso chamar os pontos e disputar a fase de envido e após o turno volta para o opponente que então pode
         //chamar truco
-        if (!isHand && round == 1) {
+        if (!isHand && round == 1 && !envido) {
             $("#btnEnvido").removeAttr("disabled", "disabled");
             $("#btnFaltaEnvido").removeAttr("disabled", "disabled");
             $("#btnRealEnvidor").removeAttr("disabled", "disabled");
@@ -1466,5 +1504,7 @@ function connect() {
 
         return rodada;
     }
+
+
 
 }

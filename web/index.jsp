@@ -21,6 +21,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
+    <!-- Sweet Alert -->
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
     <!-- Toastr style -->
     <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
@@ -307,6 +310,9 @@
 <!-- Custom and plugin javascript -->
 <script src="js/inspinia.js"></script>
 <script src="js/plugins/pace/pace.min.js"></script>
+
+<!-- Sweet alert -->
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
 <!-- Toastr script -->
 <script src="js/plugins/toastr/toastr.min.js"></script>
