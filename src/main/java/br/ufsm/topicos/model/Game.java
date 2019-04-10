@@ -1,8 +1,8 @@
 package br.ufsm.topicos.model;
 
 import br.ufsm.topicos.cbr.TrucoDescription;
-import br.ufsm.topicos.deception.JogadaPlayer1;
-import br.ufsm.topicos.deception.JogadaPlayer2;
+/*import br.ufsm.topicos.deception.JogadaPlayer1;
+import br.ufsm.topicos.deception.JogadaPlayer2;*/
 import br.ufsm.topicos.deck.Card;
 import br.ufsm.topicos.deck.Deck;
 import br.ufsm.topicos.enuns.*;
@@ -64,15 +64,15 @@ public class Game {
     private Round round2;
     private Round round3;
 
-    JogadaPlayer1 jogada1;
-    JogadaPlayer2 jogada2;
+    /*JogadaPlayer1 jogada1;
+    JogadaPlayer2 jogada2;*/
 
     private LinkedList<Card> playedCardsPlayer1;
     private LinkedList<Card> playedCardsPlayer2;
 
     private TrucoDescription trucoDescription;
 
-    private StatesDecision statesDecision;
+    /*private StatesDecision statesDecision;*/
 
     public Game() {
         this.uid = UUID.randomUUID().toString();
@@ -234,13 +234,13 @@ public class Game {
         this.playedCardsPlayer2 = playedCardsPlayer2;
     }
 
-    public StatesDecision getStatesDecision() {
+    /*public StatesDecision getStatesDecision() {
         return statesDecision;
     }
 
     public void setStatesDecision(StatesDecision statesDecision) {
         this.statesDecision = statesDecision;
-    }
+    }*/
 
     public void init() {
         deck.suffle();
@@ -258,7 +258,7 @@ public class Game {
         trucoDescription.setIdPartida(uid);
         trucoDescription.setTentosAnterioresRobo(playerRobo == getPlayer1() ? getPlayer1Points() : getPlayer2Points());
         trucoDescription.setTentosAnterioresHumano(playerRobo == getPlayer1() ? getPlayer2Points() : getPlayer1Points());
-        statesDecision = StatesDecision.START_HAND;
+        /*statesDecision = StatesDecision.START_HAND;*/
     }
 
     public void setCardsToCase() {
@@ -1055,7 +1055,7 @@ public class Game {
         uid = UUID.randomUUID().toString();
     }
 
-    private void setPostHandPlayer1() {
+    /*private void setPostHandPlayer1() {
 
         boolean isPlayerRobo = player1.equals(playerRobo);
 
@@ -1071,24 +1071,24 @@ public class Game {
                             //TODO: fazer para flor
                             break;
                         case 2:
-                            /** Call Envido/Real/Falta
-                             *  Agressive */
+                            *//** Call Envido/Real/Falta
+                             *  Agressive *//*
                             if (jogada.getPontosEnvido() > 29) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(23);
                             }
                             break;
                         case 3:
-                            /** Call Truco/Retruco/Vale4
-                             *  Agressive */
+                            *//** Call Truco/Retruco/Vale4
+                             *  Agressive *//*
                             if (jogada.getQualidadeMao() == 1) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(23);
                             }
                             break;
@@ -1097,22 +1097,22 @@ public class Game {
                 case 2:
                     switch (jogada.getTypeJogada()) {
                         case 2:
-                            /** No Call Envido/Real/Falta */
+                            *//** No Call Envido/Real/Falta *//*
                             if (jogada.getPontosEnvido() > 29) {
-                                /** Tight Agressive - slowPlay */
+                                *//** Tight Agressive - slowPlay *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Tight Passive */
+                                *//** Tight Passive *//*
                                 jogada.setIndStrategy(14);
                             }
                             break;
                         case 3:
-                            /** No Call Truco/Retruco/Vale4 */
+                            *//** No Call Truco/Retruco/Vale4 *//*
                             if (jogada.getQualidadeMao() == 1) {
-                                /** Tight Agressive - slowPlay */
+                                *//** Tight Agressive - slowPlay *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Tight Passive */
+                                *//** Tight Passive *//*
                                 jogada.setIndStrategy(14);
                             }
                             break;
@@ -1124,24 +1124,24 @@ public class Game {
                             //TODO: fazer para flor
                             break;
                         case 2:
-                            /** Accept Envido/Real/Falta
-                             * Passive */
+                            *//** Accept Envido/Real/Falta
+                             * Passive *//*
                             if (jogada.getPontosEnvido() > 29) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(14);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(24);
                             }
                             break;
                         case 3:
-                            /** Accept Truco/Retruco/Vale4
-                             *  Passive */
+                            *//** Accept Truco/Retruco/Vale4
+                             *  Passive *//*
                             if (jogada.getQualidadeMao() == 1) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(14);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(24);
                             }
                             break;
@@ -1153,13 +1153,13 @@ public class Game {
                             //TODO: fazer para flor
                             break;
                         case 2:
-                            /** Declined Envido/Real/Falta
-                             * Tight Passive */
+                            *//** Declined Envido/Real/Falta
+                             * Tight Passive *//*
                             jogada.setIndStrategy(14);
                             break;
                         case 3:
-                            /** Declined Truco/Retruco/Vale4
-                             * Tight Passive */
+                            *//** Declined Truco/Retruco/Vale4
+                             * Tight Passive *//*
                             jogada.setIndStrategy(14);
                             break;
                     }
@@ -1170,35 +1170,35 @@ public class Game {
                             //TODO: fazer para flor
                             break;
                         case 2:
-                            /** Raise Envido/Real/Falta
-                             *  Agressive */
+                            *//** Raise Envido/Real/Falta
+                             *  Agressive *//*
                             if (jogada.getPontosEnvido() > 29) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(23);
                             }
                             break;
                         case 3:
-                            /** Raise Truco/Retruco/Vale4
-                             *  Agressive */
+                            *//** Raise Truco/Retruco/Vale4
+                             *  Agressive *//*
                             if (jogada.getQualidadeMao() == 1) {
-                                /** Tight */
+                                *//** Tight *//*
                                 jogada.setIndStrategy(13);
                             } else {
-                                /** Loose */
+                                *//** Loose *//*
                                 jogada.setIndStrategy(23);
                             }
                             break;
                     }
                     break;
                 case 6:
-                    /** Tight Passive */
+                    *//** Tight Passive *//*
                     jogada.setIndStrategy(14);
                     break;
                 case 7:
-                    /** Tight Passive */
+                    *//** Tight Passive *//*
                     jogada.setIndStrategy(14);
                     break;
                 case 8:
@@ -1257,7 +1257,7 @@ public class Game {
             }
 
         }
-    }
+    }*/
 
     public void saveCase() {
 
@@ -1940,7 +1940,7 @@ public class Game {
         trucoDescription.getLogs().add(log1);
     }
 
-    public void addJogadaPlayer1(int indJogada, int typeJogada, int detailJogada, Suit naipe){
+    /*public void addJogadaPlayer1(int indJogada, int typeJogada, int detailJogada, Suit naipe){
         jogada1 = new JogadaPlayer1();
         jogada1.setIdPartida(trucoDescription.getIdPartida());
         jogada1.setIndJogada(indJogada);
@@ -2052,9 +2052,9 @@ public class Game {
 
         jogada1.setTrucoDescription(trucoDescription);
         trucoDescription.getJogadasPlayer1().add(jogada1);
-    }
+    }*/
 
-    public void addJogadaPlayer2(int indJogada, int typeJogada, int detailJogada, Suit naipe){
+    /*public void addJogadaPlayer2(int indJogada, int typeJogada, int detailJogada, Suit naipe){
         jogada2 = new JogadaPlayer2();
         jogada2.setIdPartida(trucoDescription.getIdPartida());
         jogada2.setIndJogada(indJogada);
@@ -2148,7 +2148,7 @@ public class Game {
         }
         jogada2.setTrucoDescription(trucoDescription);
         trucoDescription.getJogadasPlayer2().add(jogada2);
-    }
+    }*/
 
     public void addLog(String log, String jogada, Player player) {
 
@@ -2176,12 +2176,12 @@ public class Game {
 
     /////////////Jogadas
 
-    public void setBluffPlayer1(Suit naipe) {
+    /*public void setBluffPlayer1(Suit naipe) {
         if (jogada1.getIndJogada() == 1 || jogada1.getIndJogada() == 5) {
 
             if (jogada1.getTypeJogada() == 2) {
 
-                /**#1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;*/
+                *//**#1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;*//*
                 if (jogada1.getJogadorMao() == 1) {
                     if (jogada1.getPontosEnvido() <= 24) {
                         jogada1.setIndBlefe(1);
@@ -2191,10 +2191,10 @@ public class Game {
                     if (jogada1.getPontosEnvido() <= 24) {
                         jogada1.setIndBlefe(1);
                         if (getEnvido().getEnvidoChain().size() > 0) {
-                            /**#6 - Jogador pé, sem ter muitos pontos, aumenta ENVIDO/REAL para oponente fugir;*/
+                            *//**#6 - Jogador pé, sem ter muitos pontos, aumenta ENVIDO/REAL para oponente fugir;*//*
                             jogada1.setTypeBlefe(6);
                         } else {
-                            /**#3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;*/
+                            *//**#3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;*//*
                             jogada1.setTypeBlefe(3);
                         }
                     }
@@ -2206,26 +2206,26 @@ public class Game {
 
                 if (jogada1.getQualidadeMao() == 3) {
 
-                    /** #15 - Jogador com mão ruim chama TRUCO antes de mostrar as cartas;*/
+                    *//** #15 - Jogador com mão ruim chama TRUCO antes de mostrar as cartas;*//*
                     if (dealtCards.size() == 0 || dealtCards.size() == 1) {
                         jogada1.setIndBlefe(1);
                         jogada1.setTypeBlefe(15);
                     }
 
-                    /** #23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta; */
+                    *//** #23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta; *//*
                     if (dealtCards.size() == 2) {
                         jogada1.setIndBlefe(1);
                         jogada1.setTypeBlefe(23);
                     }
 
-                    /** #31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta; */
+                    *//** #31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta; *//*
                     if (dealtCards.size() == 4) {
                         jogada1.setIndBlefe(1);
                         jogada1.setTypeBlefe(31);
                     }
                 }
 
-                /** #24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;*/
+                *//** #24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;*//*
                 if (dealtCards.size() == 3) {
                     if (jogada1.getGanhadorPrimeiraRodada() == 2) {
 
@@ -2248,7 +2248,7 @@ public class Game {
 
                 }
 
-                /** #32 - Jogador é o pé e não tem carta para fazer a terceira, chama TRUCO antes de largar a terceira carta;*/
+                *//** #32 - Jogador é o pé e não tem carta para fazer a terceira, chama TRUCO antes de largar a terceira carta;*//*
                 if (dealtCards.size() == 5) {
                     boolean mata = false;
 
@@ -2274,7 +2274,7 @@ public class Game {
         if (jogada1.getIndJogada() == 2) {
             if (jogada1.getTypeJogada() == 2) {
                 if (jogada1.getJogadorMao() == 1) {
-                    /** #2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos; */
+                    *//** #2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos; *//*
                     if (jogada1.getPontosEnvido() > 29) {
                         jogada1.setIndBlefe(1);
                         jogada1.setTypeBlefe(2);
@@ -2286,7 +2286,7 @@ public class Game {
         if (jogada1.getIndJogada() == 7) {
             if (jogada1.getTypeJogada() == 2) {
                 if (jogada1.getJogadorMao() == 2) {
-                    /** #4 - Jogador pé, não canta os pontos para não entregar suas cartas; */
+                    *//** #4 - Jogador pé, não canta os pontos para não entregar suas cartas; *//*
                     jogada1.setIndBlefe(1);
                     jogada1.setTypeBlefe(4);
                 }
@@ -2299,7 +2299,7 @@ public class Game {
                 switch (dealtCards2.size()) {
                     case 0:
                         if (jogada1.getJogadorMao() == 1) {
-                            /** #5 – Jogador mão, com poucos pontos, não canta envido e larga um 6 ou 7 para o adversário não cantar envido; */
+                            *//** #5 – Jogador mão, com poucos pontos, não canta envido e larga um 6 ou 7 para o adversário não cantar envido; *//*
                             if (jogada1.getPontosEnvido() <= 24) {
                                 if (jogada1.getDetailJogada() == 42 || jogada1.getDetailJogada() == 40 ||
                                         jogada1.getDetailJogada() == 4) {
@@ -2312,13 +2312,13 @@ public class Game {
 
                         if (jogada1.getQualidadeMao() == 1) {
 
-                            /**#11 - Jogador com mão boa larga a carta mais baixa;*/
+                            *//**#11 - Jogador com mão boa larga a carta mais baixa;*//*
                             if (player1.getCards().getCard(0).getCbrCode() == jogada1.getDetailJogada()) {
                                 jogada1.setIndBlefe(1);
                                 jogada1.setTypeBlefe(11);
                             }
 
-                            /** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player1.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2332,13 +2332,13 @@ public class Game {
 
                         if (jogada1.getJogadorMao() == 3) {
 
-                            /**#12 - Jogador com mão ruim larga a carta mais alta;*/
+                            *//**#12 - Jogador com mão ruim larga a carta mais alta;*//*
                             if (player1.getCards().getCard(0).getCbrCode() == jogada1.getDetailJogada()) {
                                 jogada1.setIndBlefe(1);
                                 jogada1.setTypeBlefe(12);
                             }
 
-                            /** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player1.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2352,13 +2352,13 @@ public class Game {
 
                         if (jogada1.getQualidadeMao() == 1) {
 
-                            /**#11 - Jogador com mão boa larga a carta mais baixa;*/
+                            *//**#11 - Jogador com mão boa larga a carta mais baixa;*//*
                             if (player1.getCards().getCard(0).getCbrCode() == jogada1.getDetailJogada()) {
                                 jogada1.setIndBlefe(1);
                                 jogada1.setTypeBlefe(11);
                             }
 
-                            /** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player1.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2372,13 +2372,13 @@ public class Game {
 
                         if (jogada1.getJogadorMao() == 3) {
 
-                            /**#12 - Jogador com mão ruim larga a carta mais alta;*/
+                            *//**#12 - Jogador com mão ruim larga a carta mais alta;*//*
                             if (player1.getCards().getCard(0).getCbrCode() == jogada1.getDetailJogada()) {
                                 jogada1.setIndBlefe(1);
                                 jogada1.setTypeBlefe(12);
                             }
 
-                            /** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player1.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2395,26 +2395,26 @@ public class Game {
         if (jogada1.getIndJogada() == 8 && jogada1.getTypeJogada() == 5 &&
                 jogada1.getGanhadorPrimeiraRodada() == 1) {
 
-            /**#21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;*/
+            *//**#21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;*//*
             if (jogada1.getJogadorMao() == 1) {
                 jogada1.setIndBlefe(1);
                 jogada1.setTypeBlefe(21);
             }
 
-            /**#22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;*/
+            *//**#22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;*//*
             if (jogada1.getJogadorMao() == 3) {
                 jogada1.setIndBlefe(1);
                 jogada1.setTypeBlefe(22);
             }
         }
-    }
+    }*/
 
-    public void setBluffPlayer2(Suit naipe) {
+    /*public void setBluffPlayer2(Suit naipe) {
         if (jogada2.getIndJogada() == 1 || jogada2.getIndJogada() == 5) {
 
             if (jogada2.getTypeJogada() == 2) {
 
-                /**#1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;*/
+                *//**#1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;*//*
                 if (jogada2.getJogadorMao() == 1) {
                     if (jogada2.getPontosEnvido() <= 24) {
                         jogada2.setIndBlefe(1);
@@ -2424,10 +2424,10 @@ public class Game {
                     if (jogada2.getPontosEnvido() <= 24) {
                         jogada2.setIndBlefe(1);
                         if (getEnvido().getEnvidoChain().size() > 0) {
-                            /**#6 - Jogador pé, sem ter muitos pontos, aumenta ENVIDO/REAL para oponente fugir;*/
+                            *//**#6 - Jogador pé, sem ter muitos pontos, aumenta ENVIDO/REAL para oponente fugir;*//*
                             jogada2.setTypeBlefe(6);
                         } else {
-                            /**#3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;*/
+                            *//**#3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;*//*
                             jogada2.setTypeBlefe(3);
                         }
                     }
@@ -2439,26 +2439,26 @@ public class Game {
 
                 if (jogada2.getQualidadeMao() == 3) {
 
-                    /** #15 - Jogador com mão ruim chama TRUCO antes de mostrar as cartas;*/
+                    *//** #15 - Jogador com mão ruim chama TRUCO antes de mostrar as cartas;*//*
                     if (dealtCards.size() == 0 || dealtCards.size() == 1) {
                         jogada2.setIndBlefe(1);
                         jogada2.setTypeBlefe(15);
                     }
 
-                    /** #23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta; */
+                    *//** #23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta; *//*
                     if (dealtCards.size() == 2) {
                         jogada2.setIndBlefe(1);
                         jogada2.setTypeBlefe(23);
                     }
 
-                    /** #31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta; */
+                    *//** #31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta; *//*
                     if (dealtCards.size() == 4) {
                         jogada2.setIndBlefe(1);
                         jogada2.setTypeBlefe(31);
                     }
                 }
 
-                /** #24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;*/
+                *//** #24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;*//*
                 if (dealtCards.size() == 3) {
                     if (jogada2.getGanhadorPrimeiraRodada() == 2) {
 
@@ -2481,7 +2481,7 @@ public class Game {
 
                 }
 
-                /** #32 - Jogador é o pé e não tem carta para fazer a terceira, chama TRUCO antes de largar a terceira carta;*/
+                *//** #32 - Jogador é o pé e não tem carta para fazer a terceira, chama TRUCO antes de largar a terceira carta;*//*
                 if (dealtCards.size() == 5) {
                     boolean mata = false;
 
@@ -2507,7 +2507,7 @@ public class Game {
         if (jogada2.getIndJogada() == 2) {
             if (jogada2.getTypeJogada() == 2) {
                 if (jogada2.getJogadorMao() == 1) {
-                    /** #2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos; */
+                    *//** #2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos; *//*
                     if (jogada2.getPontosEnvido() > 29) {
                         jogada2.setIndBlefe(1);
                         jogada2.setTypeBlefe(2);
@@ -2519,7 +2519,7 @@ public class Game {
         if (jogada2.getIndJogada() == 7) {
             if (jogada2.getTypeJogada() == 2) {
                 if (jogada2.getJogadorMao() == 2) {
-                    /** #4 - Jogador pé, não canta os pontos para não entregar suas cartas; */
+                    *//** #4 - Jogador pé, não canta os pontos para não entregar suas cartas; *//*
                     jogada2.setIndBlefe(1);
                     jogada2.setTypeBlefe(4);
                 }
@@ -2532,7 +2532,7 @@ public class Game {
                 switch (dealtCards2.size()) {
                     case 0:
                         if (jogada2.getJogadorMao() == 1) {
-                            /** #5 – Jogador mão, com poucos pontos, não canta envido e larga um 6 ou 7 para o adversário não cantar envido; */
+                            *//** #5 – Jogador mão, com poucos pontos, não canta envido e larga um 6 ou 7 para o adversário não cantar envido; *//*
                             if (jogada2.getPontosEnvido() <= 24) {
                                 if (jogada2.getDetailJogada() == 42 || jogada2.getDetailJogada() == 40 ||
                                         jogada2.getDetailJogada() == 4) {
@@ -2545,13 +2545,13 @@ public class Game {
 
                         if (jogada2.getQualidadeMao() == 1) {
 
-                            /**#11 - Jogador com mão boa larga a carta mais baixa;*/
+                            *//**#11 - Jogador com mão boa larga a carta mais baixa;*//*
                             if (player2.getCards().getCard(0).getCbrCode() == jogada2.getDetailJogada()) {
                                 jogada2.setIndBlefe(1);
                                 jogada2.setTypeBlefe(11);
                             }
 
-                            /** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player2.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2565,13 +2565,13 @@ public class Game {
 
                         if (jogada2.getJogadorMao() == 3) {
 
-                            /**#12 - Jogador com mão ruim larga a carta mais alta;*/
+                            *//**#12 - Jogador com mão ruim larga a carta mais alta;*//*
                             if (player2.getCards().getCard(0).getCbrCode() == jogada2.getDetailJogada()) {
                                 jogada2.setIndBlefe(1);
                                 jogada2.setTypeBlefe(12);
                             }
 
-                            /** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player2.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2585,13 +2585,13 @@ public class Game {
 
                         if (jogada2.getQualidadeMao() == 1) {
 
-                            /**#11 - Jogador com mão boa larga a carta mais baixa;*/
+                            *//**#11 - Jogador com mão boa larga a carta mais baixa;*//*
                             if (player2.getCards().getCard(0).getCbrCode() == jogada2.getDetailJogada()) {
                                 jogada2.setIndBlefe(1);
                                 jogada2.setTypeBlefe(11);
                             }
 
-                            /** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #13 - Caso jogador com uma mão boa tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player2.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2605,13 +2605,13 @@ public class Game {
 
                         if (jogada2.getJogadorMao() == 3) {
 
-                            /**#12 - Jogador com mão ruim larga a carta mais alta;*/
+                            *//**#12 - Jogador com mão ruim larga a carta mais alta;*//*
                             if (player2.getCards().getCard(0).getCbrCode() == jogada2.getDetailJogada()) {
                                 jogada2.setIndBlefe(1);
                                 jogada2.setTypeBlefe(12);
                             }
 
-                            /** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; */
+                            *//** #14 - Caso jogador com uma mão ruim tenha cantado seus pontos de envido, joga carta para despitar as cartas que compoem os pontos; *//*
                             if (!getSuitEnvido(player2.getCards()).equals(naipe) && getEnvido().getEnvidoChain().size() > 0 &&
                                     (trucoDescription.getQuemEscondeuPontosEnvido() == null || (trucoDescription.getQuemEscondeuPontosEnvido() != null &&
                                             trucoDescription.getQuemEscondeuPontosEnvido() != 1)) &&
@@ -2628,19 +2628,19 @@ public class Game {
         if (jogada2.getIndJogada() == 8 && jogada2.getTypeJogada() == 5 &&
                 jogada2.getGanhadorPrimeiraRodada() == 1) {
 
-            /**#21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;*/
+            *//**#21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;*//*
             if (jogada2.getJogadorMao() == 1) {
                 jogada2.setIndBlefe(1);
                 jogada2.setTypeBlefe(21);
             }
 
-            /**#22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;*/
+            *//**#22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;*//*
             if (jogada2.getJogadorMao() == 3) {
                 jogada2.setIndBlefe(1);
                 jogada2.setTypeBlefe(22);
             }
         }
-    }
+    }*/
 
     public boolean isEnvidoPossible(int cbrCode, int pontos) {
 

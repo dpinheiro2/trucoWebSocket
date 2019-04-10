@@ -3,8 +3,8 @@ package br.ufsm.topicos.cbr;
 
 
 
-import br.ufsm.topicos.deception.JogadaPlayer1;
-import br.ufsm.topicos.deception.JogadaPlayer2;
+/*import br.ufsm.topicos.deception.JogadaPlayer1;
+import br.ufsm.topicos.deception.JogadaPlayer2;*/
 import br.ufsm.topicos.log.Log;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -277,11 +277,11 @@ public class TrucoDescription implements Serializable {
     @OneToMany(mappedBy="trucoDescription", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Collection<Log> logs = new LinkedList<Log>();
 
-    @OneToMany(mappedBy="trucoDescription", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    /*@OneToMany(mappedBy="trucoDescription", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
     private Collection<JogadaPlayer1> jogadasPlayer1 = new LinkedList<JogadaPlayer1>();
 
     @OneToMany(mappedBy="trucoDescription", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    private Collection<JogadaPlayer2> jogadasPlayer2 = new LinkedList<JogadaPlayer2>();
+    private Collection<JogadaPlayer2> jogadasPlayer2 = new LinkedList<JogadaPlayer2>();*/
 
     public Integer getIdMao() {
         return idMao;
@@ -947,7 +947,7 @@ public class TrucoDescription implements Serializable {
         this.humanoMentiuRound3 = humanoMentiuRound3;
     }
 
-    public Collection<JogadaPlayer1> getJogadasPlayer1() {
+    /*public Collection<JogadaPlayer1> getJogadasPlayer1() {
         return jogadasPlayer1;
     }
 
@@ -961,5 +961,5 @@ public class TrucoDescription implements Serializable {
 
     public void setJogadasPlayer2(Collection<JogadaPlayer2> jogadasPlayer2) {
         this.jogadasPlayer2 = jogadasPlayer2;
-    }
+    }*/
 }
