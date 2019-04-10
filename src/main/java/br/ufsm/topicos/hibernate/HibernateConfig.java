@@ -2,6 +2,8 @@ package br.ufsm.topicos.hibernate;
 
 
 import br.ufsm.topicos.cbr.TrucoDescription;
+import br.ufsm.topicos.deception.JogadaPlayer1;
+import br.ufsm.topicos.deception.JogadaPlayer2;
 import br.ufsm.topicos.log.Log;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -59,8 +61,11 @@ public class HibernateConfig {
         Configuration cfg = new Configuration();
         cfg.addPackage("br.ufsm.topicos.cbr");
         cfg.addPackage("br.ufsm.topicos.log");
+        cfg.addPackage("br.ufsm.topicos.deception");
         cfg.addAnnotatedClass(TrucoDescription.class);
         cfg.addAnnotatedClass(Log.class);
+        cfg.addAnnotatedClass(JogadaPlayer1.class);
+        cfg.addAnnotatedClass(JogadaPlayer2.class);
 
         cfg.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         cfg.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/dbtrucocbr");

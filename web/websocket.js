@@ -308,7 +308,27 @@ function connect() {
             }
         }
 
+        if (jsonData.action === "RESULT_ENVIDO_DECLINED") {
+            $("#status").text("Status: " + jsonData.result);
+            notifyInfo(jsonData.result);
+            if (token) {
+                endEnvidoPhaseState();
+            } else {
+                idleState();
+            }
+        }
+
         if (jsonData.action === "RESULT_FLOR") {
+            $("#status").text("Status: " + jsonData.result);
+            notifyInfo(jsonData.result);
+            if (token) {
+                endEnvidoPhaseState();
+            } else {
+                idleState();
+            }
+        }
+
+        if (jsonData.action === "RESULT_FLOR_DECLINED") {
             $("#status").text("Status: " + jsonData.result);
             notifyInfo(jsonData.result);
             if (token) {
@@ -1475,7 +1495,7 @@ function connect() {
         }
     }
 
-    function getRodada(round) {
+    function getRodada() {
         rodada = 0;
 
         switch (round) {
