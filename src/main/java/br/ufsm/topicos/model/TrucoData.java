@@ -46,7 +46,7 @@ public class TrucoData {
      #1 - Jogador mão canta ENVIDO/REAL/FALTA sem ter muitos pontos;
      #2 - Jogador mão deixa de cantar ENVIDO/REAL/FALTA mesmo com bastantes pontos;
      #3 - Jogador pé, sem ter muitos pontos, canta ENVIDO/REAL/FALTA porque o oponente não cantou;
-     #4 - Jogador pé, não canta os pontos para não entregar suas cartas;
+     #4 - Jogador pé, não canta/mostra os pontos para não entregar suas cartas;
      #5 – Jogador mão, com poucos pontos, não canta envido e larga um 6 ou 7 para o adversário não cantar envido;
      #6 - Jogador pé, sem ter muitos pontos, aumenta ENVIDO/REAL para oponente fugir;
 
@@ -63,7 +63,8 @@ public class TrucoData {
      #21 - Jogador ganhou primeira e tem uma mão boa, joga a segunda carta virada;
      #---------22 - Jogador ganhou primeira e tem uma mão ruim, joga a segunda carta virada;
      #23 - Tem uma mão ruim, chama TRUCO antes de largar a segunda carta;
-     #24 - Jogador perdeu primeira, é o pé e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;
+     #24 - Jogador perdeu primeira, e não tem carta para fazer a segunda, chama TRUCO antes de largar a segunda carta;
+     #25 - Jogador com uma mão boa deixa de chamar TRUCO;
 
      TRUCO - Rodada 3
      #31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta;

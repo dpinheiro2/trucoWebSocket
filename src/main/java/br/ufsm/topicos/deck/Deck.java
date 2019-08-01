@@ -31,9 +31,13 @@ public class Deck {
     }
 
     public void createDeck() {
+        /*int i = 0;*/
         for(Suit suit : Suit.values()) {
             for(Face face : Face.values()) {
+                /*i++;*/
                 this.cards.add(new Card(face, suit, getCbrCode(face, suit)));
+                /*System.out.println("INSERT into cards values (" + i + "," + "\"" + face.name() + "\"" + "," + "\"" +
+                        suit.name() + "\""+ "," + getCbrCode(face, suit) + ");");*/
             }
         }
     }

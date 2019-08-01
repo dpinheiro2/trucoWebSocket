@@ -11,6 +11,8 @@ import br.ufsm.topicos.exceptions.ExceptionFlor;
 import br.ufsm.topicos.exceptions.ExceptionTruco;
 import br.ufsm.topicos.hibernate.HibernateConfig;
 import br.ufsm.topicos.log.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,6 +37,8 @@ import java.util.*;
  */
 
 public class Game {
+
+    private static Logger logger = LogManager.getLogger(Game.class);
 
     private String uid;
     private Player player1;
@@ -413,15 +417,16 @@ public class Game {
 
     public void turnHandFirst() {
         Random r     = new Random();
-        playerRobo = (r.nextBoolean() ? getPlayer1() : getPlayer2());
+        //playerRobo = (r.nextBoolean() ? getPlayer1() : getPlayer2());
+        playerRobo = getPlayer1();
         playerHand  = (r.nextBoolean() ? getPlayer1() : getPlayer2());
         playerTurn  = playerHand;
         playerToken = playerHand;
 
-        System.out.println("Player 1 - " + getPlayer1().getName());
+        /*System.out.println("Player 1 - " + getPlayer1().getName());
         System.out.println("Player 2 - " + getPlayer2().getName());
         System.out.println("Player Robô (1) - " + getPlayerRobo().getName());
-        System.out.println("Hand Player - " + getPlayerHand().getName());
+        System.out.println("Hand Player - " + getPlayerHand().getName());*/
 
 
         //playerRobo = playerHand;
@@ -1014,14 +1019,16 @@ public class Game {
     }
 
     public void finishedHand() {
+        int pontosPlayer1 = getPlayer1Points() > 24 ? 24 : getPlayer1Points();
+        int pontosPlayer2 = getPlayer2Points() > 24 ? 24 : getPlayer2Points();
         matchScoreLog();
         finishHandLog(trucoDescription.getTentosEnvido() != null ? trucoDescription.getTentosEnvido(): 0,
                 trucoDescription.getTentosFlor() != null ? trucoDescription.getTentosFlor() : 0 ,
                 trucoDescription.getTentosTruco() != null ? trucoDescription.getTentosTruco() : 0);
         player1.getCards().giveBackCardsDeck();
         player2.getCards().giveBackCardsDeck();
-        trucoDescription.setTentosPosterioresRobo(playerRobo == getPlayer1() ? getPlayer1Points() : getPlayer2Points());
-        trucoDescription.setTentosPosterioresHumano(playerRobo == getPlayer1() ? getPlayer2Points() : getPlayer1Points());
+        trucoDescription.setTentosPosterioresRobo(playerRobo == getPlayer1() ? pontosPlayer1 : pontosPlayer2);
+        trucoDescription.setTentosPosterioresHumano(playerRobo == getPlayer1() ? pontosPlayer2 : pontosPlayer1);
         saveCase();
         init();
         shiftHand();
@@ -1038,12 +1045,14 @@ public class Game {
     }
 
     public void finishedGame() {
+        int pontosPlayer1 = getPlayer1Points() > 24 ? 24 : getPlayer1Points();
+        int pontosPlayer2 = getPlayer2Points() > 24 ? 24 : getPlayer2Points();
         matchScoreLog();
         finishHandLog(trucoDescription.getTentosEnvido() != null ? trucoDescription.getTentosEnvido(): 0,
                 trucoDescription.getTentosFlor() != null ? trucoDescription.getTentosFlor() : 0 ,
                 trucoDescription.getTentosTruco() != null ? trucoDescription.getTentosTruco() : 0);
-        trucoDescription.setTentosPosterioresRobo(playerRobo == getPlayer1() ? getPlayer1Points() : getPlayer2Points());
-        trucoDescription.setTentosPosterioresHumano(playerRobo == getPlayer1() ? getPlayer2Points() : getPlayer1Points());
+        trucoDescription.setTentosPosterioresRobo(playerRobo == getPlayer1() ? pontosPlayer1 : pontosPlayer2);
+        trucoDescription.setTentosPosterioresHumano(playerRobo == getPlayer1() ? pontosPlayer2 : pontosPlayer1);
         finishMatchLog();
         saveCase();
         player1.getCards().giveBackCardsDeck();
@@ -1266,7 +1275,7 @@ public class Game {
             session.beginTransaction();
             session.save(trucoDescription);
             session.getTransaction().commit();
-            System.out.println("Caso inserido com sucesso!");
+            //System.out.println("Caso inserido com sucesso!");
 
             session.close();
             //HibernateConfig.shutdown();
@@ -1530,7 +1539,7 @@ public class Game {
             if (dealtCards2.size() == 4) {
                 //#31 - Jogador possui terceira carta baixa, chama TRUCO/RETRUCO/VALE4 antes de largar a carta;
                 player.getCards().getCards().forEach(card -> {
-                    System.out.println(card);
+                    //System.out.println(card);
                     if (!playedCards.contains(card)) {
                         if (card.getCbrCode() < 10) {
                             trucoDescription.setHasDeception(TrucoData.TRUE);
@@ -1904,13 +1913,15 @@ public class Game {
     }
 
     public void finishMatchLog() {
+        int pontosPlayer1 = getPlayer1Points() > 24 ? 24 : getPlayer1Points();
+        int pontosPlayer2 = getPlayer2Points() > 24 ? 24 : getPlayer2Points();
         JsonProvider provider = JsonProvider.provider();
         JsonObject jsonMessage = provider.createObjectBuilder()
                 .add("action", "FINISH_MATCH")
                 .add("winner", getPlayer1Points() > getPlayer2Points() ? playerRobo == getPlayer1() ? TrucoData.ROBO :
                         TrucoData.HUMANO : playerRobo == getPlayer2() ? TrucoData.ROBO : TrucoData.HUMANO)
-                .add("agentPoints", playerRobo == getPlayer1() ? getPlayer1Points() : getPlayer2Points())
-                .add("humanoPoints", playerRobo == getPlayer1() ? getPlayer2Points() : getPlayer1Points())
+                .add("agentPoints", playerRobo == getPlayer1() ? pontosPlayer1 : pontosPlayer2)
+                .add("humanoPoints", playerRobo == getPlayer1() ? pontosPlayer2 : pontosPlayer1)
                 .build();
 
         addLog(jsonMessage.toString(), "FINISH_MATCH");
@@ -2860,7 +2871,7 @@ public class Game {
                 deckMaos.addCard(card6);
             }
 
-            System.out.println(deckMaos.getCards().toString());
+            //System.out.println(deckMaos.getCards().toString());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
